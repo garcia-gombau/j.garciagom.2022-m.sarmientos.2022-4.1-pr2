@@ -1,5 +1,6 @@
 package es.urjc.code.daw.library.unitary;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,8 @@ import es.urjc.code.daw.library.book.Book;
 import es.urjc.code.daw.library.book.BookRepository;
 import es.urjc.code.daw.library.book.BookService;
 import es.urjc.code.daw.library.notification.NotificationService;
+import org.togglz.core.Feature;
+import org.togglz.core.manager.FeatureManager;
 
 @DisplayName("BookService Unitary tests")
 public class BookServiceUnitaryTest {
@@ -20,12 +23,15 @@ public class BookServiceUnitaryTest {
     private NotificationService notificationService;
     private BookRepository repository;
 
+    private FeatureManager manager;
+
     @BeforeEach
 	public void setup() {
         
         repository = mock(BookRepository.class);
         notificationService = mock(NotificationService.class);
-        bookService = new BookService(repository, notificationService);
+        manager = mock(FeatureManager.class);
+        bookService = new BookService(manager, repository, notificationService);
 			
     }
 
@@ -37,6 +43,7 @@ public class BookServiceUnitaryTest {
 
 		// Given
 		when(repository.save(book)).thenReturn(book);
+        when(manager.isActive(any(Feature.class))).thenReturn(false);
 		
 		// When
 		bookService.save(book);
