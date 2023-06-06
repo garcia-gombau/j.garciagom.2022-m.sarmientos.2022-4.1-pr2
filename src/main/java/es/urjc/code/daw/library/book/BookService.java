@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import es.urjc.code.daw.library.features.AppFeatures;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import es.urjc.code.daw.library.notification.NotificationService;
@@ -45,9 +46,10 @@ public class BookService {
 		}
 		Book newBook = repository.save(book);
 		if (manager.isActive(AppFeatures.ASYNC_EVENTS)){
-
+			notificationService.asynchronousNotify("Book Event: book with title="+newBook.getTitle()+" was created");
+		} else {
+			notificationService.notify("Book Event: book with title=" + newBook.getTitle() + " was created");
 		}
-		notificationService.notify("Book Event: book with title="+newBook.getTitle()+" was created");
 		return newBook;
 	}
 
