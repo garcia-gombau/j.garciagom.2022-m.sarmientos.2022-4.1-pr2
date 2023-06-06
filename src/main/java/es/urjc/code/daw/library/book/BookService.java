@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import es.urjc.code.daw.library.features.AppFeatures;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import es.urjc.code.daw.library.notification.NotificationService;
@@ -21,11 +23,14 @@ public class BookService {
 	private FeatureManager manager;
 	private BookRepository repository;
 	private NotificationService notificationService;
+	private LineBreaker lineBreaker;
+	private static final int LINEBREAKER_LIMIT = 10;
 
-	public BookService(FeatureManager manager, BookRepository repository, NotificationService notificationService) {
+	public BookService(FeatureManager manager, BookRepository repository, NotificationService notificationService, LineBreaker lineBreaker) {
 		this.manager = manager;
 		this.repository = repository;
 		this.notificationService = notificationService;
+		this.lineBreaker = lineBreaker;
 	}
 
 	public Optional<Book> findOne(long id) {
@@ -42,7 +47,7 @@ public class BookService {
 
 	public Book save(Book book) {
 		if (manager.isActive(AppFeatures.LINEBREAKER)){
-
+			book.setDescription(lineBreaker.breakLine(book.getDescription(), LINEBREAKER_LIMIT));
 		}
 		Book newBook = repository.save(book);
 		if (manager.isActive(AppFeatures.ASYNC_EVENTS)){
