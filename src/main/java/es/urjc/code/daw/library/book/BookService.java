@@ -44,6 +44,9 @@ public class BookService {
 
 		}
 		Book newBook = repository.save(book);
+		if (manager.isActive(AppFeatures.ASYNC_EVENTS)){
+
+		}
 		notificationService.notify("Book Event: book with title="+newBook.getTitle()+" was created");
 		return newBook;
 	}

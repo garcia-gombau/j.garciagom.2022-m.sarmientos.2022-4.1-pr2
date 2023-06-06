@@ -5,5 +5,7 @@ import org.togglz.core.Feature;
 
 public enum AppFeatures implements Feature {
     @Label("Line breaker Feature")
-    LINEBREAKER
+    LINEBREAKER,
+    @Label("Async Events Feature")
+    ASYNC_EVENTS
 }
